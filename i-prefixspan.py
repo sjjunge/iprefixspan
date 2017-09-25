@@ -29,5 +29,57 @@ for rows in cur:
     person.append(diseaselist)
     data.append(person)
 
+    
+    
+ ### Sequences satisfied with minimum support.
+
+tst=[]
+for n in range(0,len(Alpha)):
+    AlphaPersonalList=Alpha[n][1]
+    for x in range(0,len(AlphaPersonalList)):
+        tst.append(AlphaPersonalList[x][0])
+        
+import collections
+SeqSatisfied_1= list(set([x for x in tst if tst.count(x) > 2]))
 
 
+
+
+### PROJECT DB ( S, a1| all tuples )
+
+OneLengthProjectedDB={}
+for i in range(0,len(SeqSatisfied_1)):
+    temlist=[]
+    for j in range(0,len(Alpha)):
+        AlphaPersonalList=Alpha[j][1]
+        diseaselist=[]
+        for k in range(0,len(AlphaPersonalList)):
+            if  SeqSatisfied_1[i] == AlphaPersonalList[k][0]:
+                for l in range(k+1,len(AlphaPersonalList)):
+                    diseaselist.append(AlphaPersonalList[l])
+        if(len(diseaselist)>0):
+            temlist.append([Alpha[j][0],diseaselist])
+    OneLengthProjectedDB.update({SeqSatisfied_1[i]:temlist})
+
+    
+    
+### MAKING PREFIX (a, YearDifference, b)
+
+ConstructTable={}
+for i in range(0,len(OneLengthProjectedDB.keys())):
+    temlist=[]
+    for j in range(0,len(Alpha)):
+        AlphaPersonalList=Alpha[j][1]
+        diseaselist=[]
+        for k in range(0,len(AlphaPersonalList)):
+            if  SeqSatisfied_1[i] == AlphaPersonalList[k][0]:
+                for l in range(k+1,len(AlphaPersonalList)):
+                    YearDifference=AlphaPersonalList[l][1]-AlphaPersonalList[k][1]
+                    diseaselist.append((AlphaPersonalList[k][0],YearDifference,AlphaPersonalList[l][0]))
+        if(len(diseaselist)>0):
+            temlist.append([Alpha[j][0],diseaselist])
+    ConstructTable.update({SeqSatisfied_1[i]:temlist})
+    
+    
+    
+    
