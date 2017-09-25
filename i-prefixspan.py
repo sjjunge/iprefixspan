@@ -24,7 +24,7 @@ for rows in cur:
     diseaselist=[]
     for tup in myrow:
         temp=tup.split(',')
-        diseasetup=(int(temp[0]),temp[1]);
+        diseasetup=(temp[0],int(temp[1]));
         diseaselist.append(diseasetup)
     person.append(diseaselist)
     data.append(person)
