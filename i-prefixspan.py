@@ -29,7 +29,12 @@ for rows in cur:
     person.append(diseaselist)
     data.append(person)
 
+
     
+
+ ### Set Minimum Support
+
+Minsup=0.005
     
  ### Sequences satisfied with minimum support.
 
@@ -41,7 +46,8 @@ for n in range(0,len(Alpha)):
         
 import collections
 DisListCount=Counter(DisList)
-DisListCount_Minsup_1={k:v for (k,v) in DisListCount.items() if v/18 > 0.2}
+Itemsnum1=sum(DisListCount.values())
+DisListCount_Minsup_1={k:v for (k,v) in DisListCount.items() if  v/Itemsnum1 > Minsup}
 DisList_Minsup_1=list(DisListCount_Minsup_1.keys())
 
 
@@ -97,6 +103,25 @@ for i in range(0,len(OneLengthProjectedDB.keys())):
             temlist.append([Alpha[j][0],diseaselist])
     ConstructTable_1.update({DisList_Minsup_1[i]:temlist})
 
-print(ConstructTable_1)
+
+
+
+### PREFIX 1 satisfied with minimum support.
+
+ConstructTable_1_vals=tuple(ConstructTable_1.values())
+PrefixTemp_1=[]
+
+for n in range(0,len(ConstructTable_1_vals)):
+    temp=ConstructTable_1_vals[n]
+    # temp2=[]
+    for j in range(0,len(temp)):
+        PrefixTemp_1.extend(temp[j][1])
+
+PrefixTemp_1_Count=Counter(PrefixTemp_1)
+Itemsnum2=sum(PrefixTemp_1_Count.values())
+PrefixTemp_1_Count_Minsup_1={k:v for (k,v) in PrefixTemp_1_Count.items() if v/Itemsnum2 > Minsup}
+
+
+
 
 
