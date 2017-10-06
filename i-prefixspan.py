@@ -40,46 +40,63 @@ for n in range(0,len(Alpha)):
         tst.append(AlphaPersonalList[x][0])
         
 import collections
-SeqSatisfied_1= list(set([x for x in tst if tst.count(x) > 2]))
+DisListCount=Counter(DisList)
+DisListCount_Minsup_1={k:v for (k,v) in DisListCount.items() if v/18 > 0.2}
+DisList_Minsup_1=list(DisListCount_Minsup_1.keys())
 
 
 
 
-### PROJECT DB ( S, a1| all tuples )
+for i in range(0,len(DisList_Minsup_1)):
+    Alpha_Minsup_1=[]
+    for j in range(0,len(Alpha)):
+        PerList=Alpha[j][1]
+        PerDislist=[]
+        for k in range(0,len(PerList)):
+            if PerList[k][0] in DisList_Minsup_1:
+                PerDislist.append(PerList[k])
+        if(len(PerDislist)>0):
+            Alpha_Minsup_1.append([Alpha[j][0],PerDislist])
+
+
+
+
+ ### PROJECT DB ( S, a1| all tuples )
 
 OneLengthProjectedDB={}
-for i in range(0,len(SeqSatisfied_1)):
+for i in range(0,len(DisList_Minsup_1)):
     temlist=[]
-    for j in range(0,len(Alpha)):
-        AlphaPersonalList=Alpha[j][1]
+    for j in range(0,len(Alpha_Minsup_1)):
+        PerList=Alpha_Minsup_1[j][1]
         diseaselist=[]
-        for k in range(0,len(AlphaPersonalList)):
-            if  SeqSatisfied_1[i] == AlphaPersonalList[k][0]:
-                for l in range(k+1,len(AlphaPersonalList)):
-                    diseaselist.append(AlphaPersonalList[l])
+        for k in range(0,len(PerList)):
+            if  DisList_Minsup_1[i] == PerList[k][0]:
+                for l in range(k+1,len(PerList)):
+                    diseaselist.append(PerList[l])
         if(len(diseaselist)>0):
             temlist.append([Alpha[j][0],diseaselist])
-    OneLengthProjectedDB.update({SeqSatisfied_1[i]:temlist})
+    OneLengthProjectedDB.update({DisList_Minsup_1[i]:temlist})
 
-    
-    
+
+
+
 ### MAKING PREFIX (a, YearDifference, b)
 
-ConstructTable={}
+ConstructTable_1={}
 for i in range(0,len(OneLengthProjectedDB.keys())):
     temlist=[]
-    for j in range(0,len(Alpha)):
-        AlphaPersonalList=Alpha[j][1]
+    for j in range(0,len(Alpha_Minsup_1)):
+        PerList=Alpha_Minsup_1[j][1]
         diseaselist=[]
-        for k in range(0,len(AlphaPersonalList)):
-            if  SeqSatisfied_1[i] == AlphaPersonalList[k][0]:
-                for l in range(k+1,len(AlphaPersonalList)):
-                    YearDifference=AlphaPersonalList[l][1]-AlphaPersonalList[k][1]
-                    diseaselist.append((AlphaPersonalList[k][0],YearDifference,AlphaPersonalList[l][0]))
+        for k in range(0,len(PerList)):
+            if  DisList_Minsup_1[i] == PerList[k][0]:
+                for l in range(k+1,len(PerList)):
+                    YearDifference=PerList[l][1]-PerList[k][1]
+                    diseaselist.append((PerList[k][0],YearDifference,PerList[l][0]))
         if(len(diseaselist)>0):
             temlist.append([Alpha[j][0],diseaselist])
-    ConstructTable.update({SeqSatisfied_1[i]:temlist})
-    
-    
-    
-    
+    ConstructTable_1.update({DisList_Minsup_1[i]:temlist})
+
+print(ConstructTable_1)
+
+
