@@ -1,9 +1,11 @@
 
 import pymssql
-import os, sys, string
 import pandas as pd
-import numpy as np
-from pandas import Series, DataFrame
+import collections as col
+import time
+import operator 
+
+### Connect to mssql server 
 
 conn = pymssql.connect(server="",
                        user="",
@@ -34,22 +36,22 @@ for rows in cur:
 
  ### Set Minimum Support
 
-Minsup=0.005
-    
+Minsup=
+transactions_num=
+
+
  ### Sequences satisfied with minimum support.
 
-tst=[]
+DisList=[]
 for n in range(0,len(Alpha)):
     AlphaPersonalList=Alpha[n][1]
     for x in range(0,len(AlphaPersonalList)):
-        tst.append(AlphaPersonalList[x][0])
+        DisList.append(AlphaPersonalList[x][0])
         
-import collections
-DisListCount=Counter(DisList)
-Itemsnum1=sum(DisListCount.values())
-DisListCount_Minsup_1={k:v for (k,v) in DisListCount.items() if  v/Itemsnum1 > Minsup}
-DisList_Minsup_1=list(DisListCount_Minsup_1.keys())
 
+DisListCount=col.Counter(DisList)
+DisListCount_Minsup_1={k:v for (k,v) in DisListCount.items() if float(v)/transactions_num > Minsup}
+DisList_Minsup_1=list(DisListCount_Minsup_1.keys())
 
 
 
@@ -98,28 +100,45 @@ for i in range(0,len(OneLengthProjectedDB.keys())):
             if  DisList_Minsup_1[i] == PerList[k][0]:
                 for l in range(k+1,len(PerList)):
                     YearDifference=PerList[l][1]-PerList[k][1]
-                    diseaselist.append((PerList[k][0],YearDifference,PerList[l][0]))
+                    diseaselist.append([PerList[k][0],YearDifference,PerList[l][0]])
         if(len(diseaselist)>0):
             temlist.append([Alpha[j][0],diseaselist])
     ConstructTable_1.update({DisList_Minsup_1[i]:temlist})
 
 
 
-
+ ### Making Category ..... the YearDifference
+   
+ConstructTable_1_list=list(ConstructTable_1.values())    
+    
+for i in range(0,len(ConstructTable_1_list)):
+    for j in range(0,len(ConstructTable_1_list[i])):
+        for k in range(0,len(ConstructTable_1_list[i][j][1])):
+            if ConstructTable_1_list[i][j][1][k][1] in [1,2,3]:
+                ConstructTable_1_list[i][j][1][k][1]=1
+            elif ConstructTable_1_list[i][j][1][k][1] in [4,5,6]:
+                ConstructTable_1_list[i][j][1][k][1]=2
+            elif ConstructTable_1_list[i][j][1][k][1] in [7,8,9]:
+                ConstructTable_1_list[i][j][1][k][1]=3
+            elif ConstructTable_1_list[i][j][1][k][1] in [10,11]:
+                ConstructTable_1_list[i][j][1][k][1]=4    
+    
+    
+    
+    
+   
 ### PREFIX 1 satisfied with minimum support.
 
-ConstructTable_1_vals=tuple(ConstructTable_1.values())
 PrefixTemp_1=[]
-
 for n in range(0,len(ConstructTable_1_vals)):
     temp=ConstructTable_1_vals[n]
-    # temp2=[]
     for j in range(0,len(temp)):
         PrefixTemp_1.extend(temp[j][1])
 
+PrefixTemp_1_tup=[tuple(x) for x in PrefixTemp_1]            
+
 PrefixTemp_1_Count=Counter(PrefixTemp_1)
-Itemsnum2=sum(PrefixTemp_1_Count.values())
-PrefixTemp_1_Count_Minsup_1={k:v for (k,v) in PrefixTemp_1_Count.items() if v/Itemsnum2 > Minsup}
+PrefixTemp_1_Count_Minsup_1={k:v for (k,v) in PrefixTemp_1_Count.items() if float(v)/transactions_num > Minsup}
 
 
 
