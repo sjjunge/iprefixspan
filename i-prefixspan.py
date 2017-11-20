@@ -114,14 +114,14 @@ ConstructTable_1_list=list(ConstructTable_1.values())
 for i in range(0,len(ConstructTable_1_list)):
     for j in range(0,len(ConstructTable_1_list[i])):
         for k in range(0,len(ConstructTable_1_list[i][j][1])):
-            if ConstructTable_1_list[i][j][1][k][1] in [1,2,3]:
+            if ConstructTable_1_list[i][j][1][k][1] in [0]:
+                ConstructTable_1_list[i][j][1][k][1]=0
+            elif ConstructTable_1_list[i][j][1][k][1] in [1,2,3]:
                 ConstructTable_1_list[i][j][1][k][1]=1
             elif ConstructTable_1_list[i][j][1][k][1] in [4,5,6]:
                 ConstructTable_1_list[i][j][1][k][1]=2
-            elif ConstructTable_1_list[i][j][1][k][1] in [7,8,9]:
+            elif ConstructTable_1_list[i][j][1][k][1] in [7,8,9,10]:
                 ConstructTable_1_list[i][j][1][k][1]=3
-            elif ConstructTable_1_list[i][j][1][k][1] in [10,11]:
-                ConstructTable_1_list[i][j][1][k][1]=4    
     
     
     
@@ -130,15 +130,16 @@ for i in range(0,len(ConstructTable_1_list)):
 ### PREFIX 1 satisfied with minimum support.
 
 PrefixTemp_1=[]
-for n in range(0,len(ConstructTable_1_vals)):
-    temp=ConstructTable_1_vals[n]
+for n in range(0,len(ConstructTable_1_list)):
+    temp=ConstructTable_1_list[n]
     for j in range(0,len(temp)):
         PrefixTemp_1.extend(temp[j][1])
+        
+PrefixTemp_1_tup=[tuple(x) for x in PrefixTemp_1]    
 
-PrefixTemp_1_tup=[tuple(x) for x in PrefixTemp_1]            
-
-PrefixTemp_1_Count=Counter(PrefixTemp_1)
+PrefixTemp_1_Count=col.Counter(PrefixTemp_1_tup)
 PrefixTemp_1_Count_Minsup_1={k:v for (k,v) in PrefixTemp_1_Count.items() if float(v)/transactions_num > Minsup}
+
 
 
 
