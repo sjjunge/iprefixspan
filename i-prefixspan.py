@@ -16,7 +16,7 @@ cur = conn.cursor()
 
 cur.execute("select top 20 * from __Grad_7")
 
-data=[]
+Alpha=[]
 for rows in cur:
     person=[]
     person.append(rows[0])
@@ -29,7 +29,7 @@ for rows in cur:
         diseasetup=(temp[0],int(temp[1]));
         diseaselist.append(diseasetup)
     person.append(diseaselist)
-    data.append(person)
+    Alpha.append(person)
 
 
     
@@ -44,15 +44,20 @@ transactions_num=
 
 DisList=[]
 for n in range(0,len(Alpha)):
-    AlphaPersonalList=Alpha[n][1]
-    for x in range(0,len(AlphaPersonalList)):
-        DisList.append(AlphaPersonalList[x][0])
+    PerList=Alpha[n][1]
+    for x in range(0,len(PerList)):
+        DisList.append(PerList[x][0])
         
+
 
 DisListCount=col.Counter(DisList)
 DisListCount_Minsup_1={k:v for (k,v) in DisListCount.items() if float(v)/transactions_num > Minsup}
 DisList_Minsup_1=list(DisListCount_Minsup_1.keys())
 
+ ### saves the diseases satisfied min_sup 
+  
+final_data=pd.DataFrame(DisListCount_Minsup_1.items(),columns=['sicks','count'])
+final_data.to_csv('first_rules_2002.csv', sep=',', encoding='utf-8')
 
 
 for i in range(0,len(DisList_Minsup_1)):
@@ -69,7 +74,9 @@ for i in range(0,len(DisList_Minsup_1)):
 
 
 
+
  ### PROJECT DB ( S, a1| all tuples )
+
 
 OneLengthProjectedDB={}
 for i in range(0,len(DisList_Minsup_1)):
@@ -109,7 +116,8 @@ for i in range(0,len(OneLengthProjectedDB.keys())):
 
  ### Making Category ..... the YearDifference
    
-ConstructTable_1_list=list(ConstructTable_1.values())    
+ConstructTable_1_list=list(ConstructTable_1.values())
+  
     
 for i in range(0,len(ConstructTable_1_list)):
     for j in range(0,len(ConstructTable_1_list[i])):
@@ -128,17 +136,22 @@ for i in range(0,len(ConstructTable_1_list)):
     
    
 ### PREFIX 1 satisfied with minimum support.
-
 PrefixTemp_1=[]
 for n in range(0,len(ConstructTable_1_list)):
     temp=ConstructTable_1_list[n]
     for j in range(0,len(temp)):
         PrefixTemp_1.extend(temp[j][1])
         
-PrefixTemp_1_tup=[tuple(x) for x in PrefixTemp_1]    
+PrefixTemp_1_tup=[tuple(x) for x in PrefixTemp_1]      
+
 
 PrefixTemp_1_Count=col.Counter(PrefixTemp_1_tup)
 PrefixTemp_1_Count_Minsup_1={k:v for (k,v) in PrefixTemp_1_Count.items() if float(v)/transactions_num > Minsup}
+
+
+ ### save the final data 
+  
+final_data=pd.DataFrame(PrefixTemp_1_Count_Minsup_1.items(),columns=['sicks','count'])
 
 
 
